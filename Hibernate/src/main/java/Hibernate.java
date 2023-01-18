@@ -49,10 +49,11 @@ class TableImpl implements TableActions{
 
     @Override
     public void update(Session session) {
-        int id = 1;
+        int id = 4;
+        session.getTransaction().setTimeout(20);
+        session.getTransaction().begin();
         TestUser testUser = (TestUser) session.get(TestUser.class, new Integer(id));
         testUser.setAge(12);
-        session.beginTransaction();
         session.saveOrUpdate(testUser);
         session.getTransaction().commit();
         System.out.println("succesfully");
@@ -60,7 +61,7 @@ class TableImpl implements TableActions{
 
     @Override
     public void delete(Session session) {
-        int id = 1;
+        int id = 2;
         TestUser testUser = (TestUser) session.get(TestUser.class, new Integer(id));
         session.beginTransaction();
         session.delete(testUser);

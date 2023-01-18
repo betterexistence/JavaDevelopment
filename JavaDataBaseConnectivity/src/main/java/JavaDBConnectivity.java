@@ -4,6 +4,7 @@ public class JavaDBConnectivity {
     public static void main(String[] args) throws SQLException {
         JDBCClass jdbcClass = new JDBCClass();
         jdbcClass.createTable();
+        //jdbcClass.insertRow();
         jdbcClass.printTable();
     }
 }
@@ -18,15 +19,15 @@ class JDBCClass {
     }
 
     public void updateRow() throws SQLException {
-        String update = "UPDATE testusers SET NAME='neon' WHERE ID = '10'";
+        String update = "UPDATE shop SET NAME='neon' WHERE ID = '10'";
         statement.executeUpdate(update);
     }
 
     public void insertRow() throws SQLException {
-        int id = 4;
-        if(!requestValidation(id)){
-            String insert = String.format("INSERT INTO testusers " +
-                    "VALUES(%2d, 'raze', 48)", id);
+        int id = 1;
+        if(requestValidation(id)){
+            String insert = String.format("INSERT INTO shop " +
+                    "VALUES(%2d, 'butter')", id);
             statement.executeUpdate(insert);
         }else System.out.println(String.format("Невозможно добавить строку, потому что строка с Id =%2d существует!", id));
     }
@@ -38,7 +39,7 @@ class JDBCClass {
     }
 
     public void printTable() throws SQLException {
-        String request = "SELECT * FROM testusers";
+        String request = "SELECT * FROM shop";
         ResultSet resultSet = statement.executeQuery(request);
         ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
         int columnNumber = resultSetMetaData.getColumnCount();
@@ -55,13 +56,12 @@ class JDBCClass {
     }
 
     public void createTable() throws SQLException {
-        String tableName = "testusers";
+        String tableName = "shop";
         if(!tableValidation(tableName)){
             String createTable =
-                    "CREATE TABLE TESTUSERS(\n" +
+                    "CREATE TABLE shop(\n" +
                             "   ID INT PRIMARY KEY     NOT NULL,\n" +
-                            "   NAME           TEXT    NOT NULL,\n" +
-                            "   AGE            INT     NOT NULL\n" +
+                            "   ITEM           TEXT    NOT NULL\n" +
                             ")";
             statement.executeUpdate(createTable);
         }else System.out.println(String.format("Таблица с таким названием %s уже существует!", tableName));
@@ -74,13 +74,13 @@ class JDBCClass {
     }
 
     private Boolean requestValidation(int id) throws SQLException {
-        String requestValidation = String.format("SELECT * FROM testusers WHERE ID = '%2d'", id);
+        String requestValidation = String.format("SELECT * FROM shop WHERE ID = '%2d'", id);
         PreparedStatement preparedStatement = connection.prepareStatement(requestValidation);
         return preparedStatement.execute();
     }
 
     private Connection getNewConnection() throws SQLException{
-        String url = "jdbc:postgresql://localhost:5432/testdb";
+        String url = "jdbc:postgresql://localhost:5432/shop";
         String user = "postgres";
         String password = "masterkey";
         return DriverManager.getConnection(url, user, password);
